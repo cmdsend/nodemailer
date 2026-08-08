@@ -1,18 +1,20 @@
-# nodemailer-cmdsend
+# @cmdsend/nodemailer
+
+npm: https://www.npmjs.com/package/@cmdsend/nodemailer
 
 Nodemailer transport for [cmdsend.com](https://cmdsend.com), a transactional email API built on Amazon SES.
 
 ## Install
 
 ```bash
-npm install nodemailer-cmdsend nodemailer
+npm install @cmdsend/nodemailer nodemailer
 ```
 
 ## Send an email
 
 ```js
 import nodemailer from "nodemailer";
-import { cmdsendTransport } from "nodemailer-cmdsend";
+import { cmdsendTransport } from "@cmdsend/nodemailer";
 
 const transporter = nodemailer.createTransport(
   cmdsendTransport({ apiKey: process.env.CMDSEND_API_KEY }),
@@ -26,7 +28,7 @@ await transporter.sendMail({
 });
 ```
 
-CommonJS: `const { cmdsendTransport } = require("nodemailer-cmdsend");` — everything else is identical.
+CommonJS: `const { cmdsendTransport } = require("@cmdsend/nodemailer");` — everything else is identical.
 
 ## Runtime support
 
@@ -34,7 +36,7 @@ CommonJS: `const { cmdsendTransport } = require("nodemailer-cmdsend");` — ever
 
 Nodemailer's main entry point unconditionally `require()`s its SMTP transport, which loads Node's `net` and `tls` modules at import time (see [`smtp-connection/index.js`](https://github.com/nodemailer/nodemailer/blob/master/lib/smtp-connection/index.js)). Edge runtimes don't implement `node:net` — there's no raw TCP socket API to give you — so `import nodemailer from "nodemailer"` throws before your code even runs. This is a known, long-standing constraint tracked upstream: [nodemailer/nodemailer#1621](https://github.com/nodemailer/nodemailer/issues/1621) and [#1623](https://github.com/nodemailer/nodemailer/issues/1623). It is not something a transport package layered on top of Nodemailer — this one included — can work around.
 
-So: use `nodemailer-cmdsend` anywhere you're already running Node.js — Express, Fastify, NestJS, Next.js API routes / route handlers / server actions on the **Node.js runtime**, AWS Lambda, containers, or any existing app that already uses Nodemailer.
+So: use `@cmdsend/nodemailer` anywhere you're already running Node.js — Express, Fastify, NestJS, Next.js API routes / route handlers / server actions on the **Node.js runtime**, AWS Lambda, containers, or any existing app that already uses Nodemailer.
 
 **On an edge runtime, skip Nodemailer entirely** — you don't need a mail library there, just call cmdsend's HTTP API with `fetch` directly:
 
@@ -79,7 +81,7 @@ Only the transport setup changes — `transporter.sendMail({...})` calls stay ex
 ```diff
  import nodemailer from "nodemailer";
 -import sgTransport from "nodemailer-sendgrid";
-+import { cmdsendTransport } from "nodemailer-cmdsend";
++import { cmdsendTransport } from "@cmdsend/nodemailer";
 
  const transporter = nodemailer.createTransport(
 -  sgTransport({ apiKey: process.env.SENDGRID_API_KEY }),
@@ -92,7 +94,7 @@ Only the transport setup changes — `transporter.sendMail({...})` calls stay ex
 ```diff
  import nodemailer from "nodemailer";
 -import mg from "nodemailer-mailgun-transport";
-+import { cmdsendTransport } from "nodemailer-cmdsend";
++import { cmdsendTransport } from "@cmdsend/nodemailer";
 
  const transporter = nodemailer.createTransport(
 -  mg({ auth: { api_key: process.env.MAILGUN_API_KEY, domain: process.env.MAILGUN_DOMAIN } }),
@@ -104,7 +106,7 @@ Only the transport setup changes — `transporter.sendMail({...})` calls stay ex
 
 ```diff
  import nodemailer from "nodemailer";
-+import { cmdsendTransport } from "nodemailer-cmdsend";
++import { cmdsendTransport } from "@cmdsend/nodemailer";
 
  const transporter = nodemailer.createTransport(
 -  {
@@ -180,4 +182,5 @@ A send that only uses documented fields (`from`/`to`/`cc`/`bcc`/`subject`/`html`
 
 ## Learn more
 
-cmdsend API docs: https://cmdsend.com/docs
+- npm package: https://www.npmjs.com/package/@cmdsend/nodemailer
+- cmdsend API docs: https://cmdsend.com/docs

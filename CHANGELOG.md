@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Initial release: Nodemailer transport for cmdsend.com.
+- Initial release: Nodemailer transport for cmdsend.com, published as `@cmdsend/nodemailer`.
 - Structured JSON send via `POST /v1/emails/send` (from, to, cc, bcc, subject, html, text, reply_to).
 - Attachments (including inline CID images) and custom headers, mapped from Nodemailer's normalized mail data.
 - Retry with exponential backoff + jitter on 429/5xx responses, respecting `Retry-After`; no retry on 4xx auth/validation errors.

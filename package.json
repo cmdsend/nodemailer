@@ -1,5 +1,5 @@
 {
-  "name": "nodemailer-cmdsend",
+  "name": "@cmdsend/nodemailer",
   "version": "0.1.0",
   "description": "Nodemailer transport for cmdsend.com — transactional email API on Amazon SES",
   "type": "module",
