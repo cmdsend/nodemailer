@@ -5,6 +5,17 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.1] - 2026-09-10
+
+### Changed
+
+- Docs: attachments and inline CID images are now a documented, supported part of
+  cmdsend's send API — the payload this transport already sends is the official
+  shape, so the "unconfirmed" caveat is gone. Documented the real limits
+  (20 attachments, 40 MB per message after base64, executable types rejected).
+- Docs: confirmed that custom headers (`mail.headers`) are **dropped** by
+  cmdsend's send endpoint rather than honored. Don't depend on them.
+
 ## [0.1.0] - 2026-08-08
 
 ### Added

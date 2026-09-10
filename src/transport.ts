@@ -6,7 +6,7 @@ import { requestJson, type FetchLike } from "./http.js";
 import { buildSendPayload, type NormalizedMail } from "./payload.js";
 
 // Keep in sync with package.json "version".
-const VERSION = "0.1.0";
+const VERSION = "0.1.1";
 
 const DEFAULT_BASE_URL = "https://api.cmdsend.com/v1";
 const DEFAULT_TIMEOUT_MS = 30_000;

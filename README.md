@@ -163,22 +163,22 @@ Retried automatically (see [Options](#options)). If it still fails after retries
 The request didn't complete within `timeout`. Raise the `timeout` option, or check outbound network access from wherever this is running (e.g. a locked-down VPC or container).
 
 **Attachment rejected / request too large**
-cmdsend has not published a specific attachment size limit as of this writing. This transport doesn't enforce a client-side cap — if the API rejects a payload as too large, the error message in the thrown `CmdsendError` is the source of truth; treat it as such rather than a fixed number documented here.
+cmdsend accepts up to 20 attachments totalling 40 MB per message (after base64 encoding), and rejects executable file types (`.exe`, `.bat`, `.js`, `.jar`, `.vbs`, …) with a `400 InvalidAttachment`. This transport doesn't enforce a client-side cap, so the message in the thrown `CmdsendError` is the source of truth for what the API actually refused.
 
 **Getting a `CmdsendError` instead of a generic `Error`**
 That's intentional — every failure from this transport (network error, timeout, non-2xx response) is normalized into a `CmdsendError` with `.statusCode` and `.code` set when available, instead of a raw `fetch`/`AbortError`.
 
 ## A note on API coverage
 
-This transport was built against cmdsend's structured JSON send endpoint (`POST /v1/emails/send`) and the existing `cmdsend` npm SDK, which is the closest thing to a contract available at the time of writing. A few things it supports are **not** confirmed against cmdsend's public API reference and should be verified before you depend on them in production:
+This transport was built against cmdsend's structured JSON send endpoint (`POST /v1/emails/send`) and the `cmdsend` npm SDK. Where it stands against the documented request schema today:
 
-- **Attachments and inline CID images** are sent as an `attachments` array (`filename`, base64 `content`, `content_type`, `content_id`). This field isn't part of the documented request schema.
-- **Custom headers** (`mail.headers`) are sent as a `headers` object on the request body, also undocumented.
-- **`Idempotency-Key`** — see [Idempotency](#idempotency) above.
-- There is no known raw-MIME send endpoint, so this transport always sends structured JSON rather than a raw `message/rfc822` body.
+- **Attachments and inline CID images** are supported. They're sent as an `attachments` array (`filename`, base64 `content`, `content_type`, `content_id`) — the exact shape cmdsend documents, so Nodemailer attachments map straight through, CID images included.
+- **Custom headers** (`mail.headers`) are still sent as a `headers` object on the request body. cmdsend's send endpoint does **not** accept this field: unrecognized fields are dropped, so the request succeeds but your headers don't reach the message. Don't depend on them.
+- **`Idempotency-Key`** — see [Idempotency](#idempotency) above; still undocumented.
+- There is no raw-MIME send endpoint, so this transport always sends structured JSON rather than a raw `message/rfc822` body. cmdsend composes the MIME server-side.
 - `verify()` has no dedicated auth-check endpoint to call, so it does a `GET` on a placeholder email id and treats `401`/`403` as failure, anything else as success.
 
-A send that only uses documented fields (`from`/`to`/`cc`/`bcc`/`subject`/`html`/`text`/`reply_to`) isn't affected by any of this. But if you rely on attachments, custom headers, or idempotency: we don't know whether cmdsend's request validation ignores unrecognized fields or rejects the whole request, so test against your own account before depending on them in production.
+Everything except custom headers and idempotency maps onto documented API fields.
 
 ## Learn more
 
